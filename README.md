@@ -118,4 +118,8 @@ disposable cache. The Markdown stays the source of truth.
 
 ---
 
-v1.0 · September 2026 · MIT licensed · Built by [IndieOps](https://indieops.co)
+v1.0 · September 2026 · IndieOps Free License · Built by [IndieOps](https://indieops.co)
+
+## License
+
+**License:** [IndieOps Free License](LICENSE). Free to use, even commercially; don't redistribute it.
