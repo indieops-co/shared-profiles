@@ -122,4 +122,5 @@ v1.0 · September 2026 · IndieOps Free License · Built by [IndieOps](https://i
 
 ## License
 
-**License:** [IndieOps Free License](LICENSE). Free to use, even commercially; don't redistribute it.
+Copyright © 2026 Dave Biggs. All rights reserved.  
+Licensed under the [IndieOps Free License v1.0](LICENSE). Free to use, even commercially; don't redistribute it.
