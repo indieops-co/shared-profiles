@@ -1,4 +1,4 @@
-# The IndieOps client library convention
+# The IndieOps Shared Profiles convention
 
 For anyone adding library support to a Skilllet. Short on purpose — the whole thing is "read some
 Markdown if it's there".
@@ -62,12 +62,12 @@ existing folder, compare the `# <name>` heading in its `profile.md` against the 
 if they differ, stop and ask rather than merging two clients into one record.
 
 Rather than reimplementing any of this, import `slugify` and `libraryPath` from
-`indieops-client/scripts/ioc.mjs` when it's on hand.
+`shared-profiles/scripts/ioc.mjs` when it's on hand.
 
 ## The fields
 
 Paths alone aren't a spec — two conformant Skilllets that use different headings still can't read
-each other. The templates in `indieops-client/templates/` are the schema; these are their headings
+each other. The templates in `shared-profiles/templates/` are the schema; these are their headings
 and the labels that matter. Match them exactly, and treat any field as optional and possibly empty.
 
 **`me.md`** — `## Who` (Name, What I do, Company / trading name, Where I'm based) ·
@@ -114,9 +114,9 @@ writes and reads is a notes field wearing a disguise.
 ## The line to put in your SKILL.md
 
 ```markdown
-## Shared client library
+## Shared Profiles
 
-Before asking for anything about the user or their business, check for the IndieOps client library:
+Before asking for anything about the user or their business, check for IndieOps Shared Profiles:
 `$INDIEOPS_HOME`, or a path in `.indieops-home`, or `~/.indieops`. If it exists, read `me.md` and
 `businesses/<slug>/profile.md` and use what's there instead of asking again. Add facts you learn that
 are missing; never overwrite a field another Skilllet set — flag the conflict instead. Your own

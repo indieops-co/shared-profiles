@@ -1,9 +1,9 @@
 ---
-name: indieops-client
+name: shared-profiles
 description: The shared memory every IndieOps Skilllet reads from — one plain-Markdown library on this machine holding who the user is (name, voice, brand defaults) and one profile per business they work on (their own or a client's). Use to set the library up, add or switch between businesses, answer "which clients do I have" or "when did I last work on X", move or back the library up, correct a stored fact, or remove a business that's no longer a client. Not for doing the work itself: the business-specific Skilllet still owns its own onboarding, audits, content and reports — this only stores and hands back the facts, and a sibling Skilllet reads the library directly without loading this one.
 ---
 
-# IndieOps Client Library
+# IndieOps Shared Profiles
 
 One folder on the machine that every IndieOps Skilllet reads. The point: **nobody types the same
 fact twice.** LinkPanther learns the domain, GBPCoach learns the business, Instantly Ready learns the
@@ -85,7 +85,7 @@ produce work.
 
 | The user says | Do |
 |---|---|
-| "set up my client library", "start sharing between skills" | `init`, then fill from what you know |
+| "set up my shared profiles", "start sharing between skills" | `init`, then fill from what you know |
 | "which clients do I have", "when did I last work on X" | `list` |
 | "switch to <business>", "we're working on <business> now" | read that profile, confirm in one line |
 | "where does this live", "how do I back it up" | `where`, plus the relocation note in `CONVENTION.md` |
