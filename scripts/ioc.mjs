@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// ioc — IndieOps client library helper.
+// ioc — IndieOps Shared Profiles helper.
 //
 // Optional. Everything this does could be done by hand; it exists so path
 // resolution and slugging are consistent across every Skilllet instead of being
@@ -24,7 +24,7 @@ const HERE = dirname(fileURLToPath(import.meta.url));
 const TEMPLATES = join(HERE, '..', 'templates');
 
 const HELP = `
-ioc — IndieOps client library
+ioc — IndieOps Shared Profiles
 
   where                        print the resolved library path
   init [--business "Name"]     create the library, optionally with a business
@@ -119,11 +119,11 @@ async function template(name) {
   try {
     return await readFile(join(TEMPLATES, name), 'utf8');
   } catch {
-    die(`Can't find templates/${name}. Run this from inside the indieops-client folder.`);
+    die(`Can't find templates/${name}. Run this from inside the shared-profiles folder.`);
   }
 }
 
-const README = `# IndieOps client library
+const README = `# IndieOps Shared Profiles
 
 Shared memory for IndieOps Skilllets. Every Skilllet reads from here so you never type the same fact
 twice.

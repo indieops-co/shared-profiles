@@ -1,4 +1,4 @@
-# IndieOps Client Library
+# IndieOps Shared Profiles
 
 **Type a fact once. Every IndieOps Skilllet knows it.**
 
@@ -37,13 +37,13 @@ diff them in git, or email one to an assistant.
 
 ## Install
 
-Drop the `indieops-client` folder in as a skill, the same as any other Skilllet, then:
+Drop the `shared-profiles` folder in as a skill, the same as any other Skilllet, then:
 
 ```
 node scripts/ioc.mjs init --business "Acme Plumbing"
 ```
 
-Or just say *"set up my client library"* and let the Skilllet do it.
+Or just say *"set up my shared profiles"* and let the Skilllet do it.
 
 Then fill in `me.md`. The voice section is the one that pays for itself — it's why the next thing you
 generate sounds like you wrote it.
@@ -118,4 +118,9 @@ disposable cache. The Markdown stays the source of truth.
 
 ---
 
-v1.0 · September 2026 · MIT licensed · Built by [IndieOps](https://indieops.co)
+v1.0 · September 2026 · IndieOps Free License · Built by [IndieOps](https://indieops.co)
+
+## License
+
+Copyright © 2026 Dave Biggs. All rights reserved.  
+Licensed under the [IndieOps Free License v1.0](LICENSE). Free to use, even commercially; don't redistribute it.
