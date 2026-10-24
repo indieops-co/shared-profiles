@@ -2,7 +2,7 @@
 
 **Type a fact once. Every IndieOps Skilllet knows it.**
 
-*An IndieOps Skilllet — a copyable skill folder that does one job properly.* · Skilllet 2026-15 · [indieops.co](https://indieops.co)
+*Skilllet. Fine-tuned Agentic superpowers.* · Skilllet 2026-15 · [indieops.co](https://indieops.co)
 
 LinkPanther learns the domain. GBPCoach learns the business. Instantly Ready learns the sending
 setup. Right now each one asks you from scratch. Install this and they stop.
