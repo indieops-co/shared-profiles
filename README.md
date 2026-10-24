@@ -17,7 +17,7 @@ LinkPanther learns the domain. GBPCoach learns the business. Instantly Ready lea
 setup. Right now each one asks you from scratch. Install this and they stop.
 
 And now it knows how you *look*: give yourself, or any client, a brand theme — colours, fonts, type,
-corners, logo — that every report, post and page those Skilllets make picks up.
+corners, logo — in one file that any Skilllet that makes reports, posts or pages can wear.
 
 Free, and it makes every other Skilllet you own better.
 

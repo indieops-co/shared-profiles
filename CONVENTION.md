@@ -182,6 +182,11 @@ The rules:
   offer to run `ioc theme set …` for them.
 - **Never theme semantic colours.** Up/down, success/error, warning: those keep their fixed meaning
   whatever the brand's accent is. A red accent must never colour a number that went up.
+- **Text in the accent colour uses `accentText`.** `accent` is the brand colour for fills — buttons,
+  bars, borders — and may be too pale or too dark to read as text. `accentText` is the same colour,
+  moved only as far as it needs to reach 4.5:1 on that mode's canvas (usually it's identical). If your
+  output has its own background rather than the theme's canvas, check the contrast there, or let your
+  own dark-mode logic lighten the accent instead of taking `dark.accent` as given.
 - **The entity's identity, never the source's.** The theme started from another company's design
   language. Creatives show the entity's own name and logo — never the source brand's name, logo or
   imagery, and nothing that suggests an affiliation.
