@@ -74,6 +74,16 @@ timetable against this, so it's worth getting right once.
   Skilllet's own notes, not here)*
 - **Marketing tools already paid for:**
 
+## Brand
+How it looks — for anything that renders: reports, posts, pages, decks. The theme is the structured
+version every Skilllet reads; the lines below are the same thing in words.
+
+- **Theme:** *(none yet — say "give this business a brand theme": `brand/theme.json`, with a live preview)*
+- **Fonts:**
+- **Colours:**
+- **Look, in a phrase:**
+- **Logo file:** *(a path, if there is one)*
+
 ## Voice
 How the **business** talks about its own work — not how the marketer talks, if those differ. Quote a
 phrase or two, and note where it came from.

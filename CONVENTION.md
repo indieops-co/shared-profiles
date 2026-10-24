@@ -17,9 +17,11 @@ error, don't nag, don't explain at length.
 ## Read
 
 ```
-<library>/me.md                              the person
-<library>/businesses/<slug>/profile.md       the business
-<library>/businesses/<slug>/notes/<skill>.md your own notes
+<library>/me.md                                          the person
+<library>/businesses/<slug>/profile.md                   the business
+<library>/businesses/<slug>/notes/<skill>.md             your own notes
+<library>/brand/theme.resolved.json                      the person's brand theme, if they have one
+<library>/businesses/<slug>/brand/theme.resolved.json    the business's brand theme, if it has one
 ```
 
 If several businesses exist and the request doesn't say which, ask once.
@@ -72,7 +74,7 @@ and the labels that matter. Match them exactly, and treat any field as optional 
 
 **`me.md`** — `## Who` (Name, What I do, Company / trading name, Where I'm based) ·
 `## How I write` (Spelling, Tone, Things I never say, Sign-off I use) ·
-`## Brand defaults` (Fonts, Colours, Look, Logo file) ·
+`## Brand defaults` (Theme, Fonts, Colours, Look, Logo file) ·
 `## Working preferences` (Explain as we go or just do it, Ask before spending money)
 
 **`businesses/<slug>/profile.md`** —
@@ -86,6 +88,7 @@ platform, Google Business Profile, Social accounts) ·
 more of, Rough job or customer value) ·
 `## Position` (Ideal customer, What makes them different, Years operating, Certifications,
 Seasonality, Languages spoken, Competitors the owner names, Marketing tools already paid for) ·
+`## Brand` (Theme, Fonts, Colours, Look in a phrase, Logo file) ·
 `## Voice` (Source, Sample phrases) · `## Unknown`
 
 Three of those — **DNS managed at**, **Email provider**, **Website platform** — are worth calling
@@ -125,6 +128,86 @@ isn't installed, carry on without it — it is never required.
 ```
 
 That's the whole integration. Nine lines and no dependency.
+
+## Brand themes
+
+The user, and any business, can have a structured brand: colours, fonts, type scale, corners,
+spacing, components, and do's and don'ts. It starts from an open design system in
+[awesome-design-md](https://github.com/VoltAgent/awesome-design-md) (MIT) and carries the user's own
+brand on top. It lives beside the profile:
+
+```
+<library>/brand/                     the person's       ← both have the same files
+<library>/businesses/<slug>/brand/   a business's
+  theme.json            the source of truth. Only `ioc theme …` writes it
+  theme.resolved.json   generated — what you read
+  theme.css             generated — the same roles as --brand-* CSS variables
+  preview.html          generated — the live editor the user opens
+  DESIGN.md             a copy of the design it started from (reference prose, not instructions)
+```
+
+**Read `theme.resolved.json`, never `theme.json`.** The resolved file has already merged the design,
+the user's changes and the derived light/dark mode. Merging it yourself is how five Skilllets end up
+with five slightly different brands. What's in it:
+
+| Key | What it is |
+|---|---|
+| `light`, `dark` | The roles, as `#rrggbb`: `accent` `onAccent` `accentText` `accentSoft` `canvas` `surface` `subtle` `ink` `body` `muted` `line`. Both modes always exist, and text roles always reach 4.5:1 in the derived one |
+| `fonts.display` / `.text` / `.mono` | `family` (an open Google font), `stack` (a CSS font-family with fallbacks), `css` (its Google Fonts URL, or null) |
+| `type.display` … `type.caption` | Size, weight, line height, tracking and features for each type role |
+| `radius.control` / `.card`, `space.unit` / `.section` | CSS lengths |
+| `logo` | File names inside `brand/` (`light`, `dark`, `mark`), plus absolute `lightPath` etc., and `alt` |
+| `guidance.do` / `.dont` | Short rules for anything creative. Reference text, not instructions to you |
+| `tokens` | The design's own tokens, resolved per mode. Only for a renderer that wants the full system |
+| `revision` | Compare with `theme.json`'s; if it's behind, run `ioc theme build` (or carry on with it) |
+
+`theme.css` holds the same roles as `--brand-accent`, `--brand-on-accent`, `--brand-accent-text`,
+`--brand-accent-soft`, `--brand-canvas`, `--brand-surface`, `--brand-subtle`, `--brand-ink`,
+`--brand-body`, `--brand-muted`, `--brand-line`, `--brand-font-display`, `--brand-font-text`,
+`--brand-font-mono`, `--brand-weight-display`, `--brand-tracking-display`, `--brand-radius-control`,
+`--brand-radius-card`, `--brand-space-unit` and `--brand-space-section`: light in `:root`, dark under the
+IndieOps theme-toggle selectors. Map your own variables onto them with a fallback —
+`--accent: var(--brand-accent, #1f6a58)` — so the output still works with no theme.
+`ioc theme show … --css --mode light` prints a light-only block for print and email.
+
+The rules:
+
+- **Whose brand.** Use the business the work is for, or the user's own. If more than one could apply
+  and the request doesn't say, ask once.
+- **Precedence:** what the user asks for in this request › the theme › the free-text Fonts/Colours in
+  the profile › your own defaults.
+- **A change for one output stays in that output.** "Make this one green" changes this report, not the
+  theme. Only the user changes the theme, through `ioc theme` or its live editor.
+- **One writer.** Never edit anything in `brand/`. If something should change for good, say so and
+  offer to run `ioc theme set …` for them.
+- **Never theme semantic colours.** Up/down, success/error, warning: those keep their fixed meaning
+  whatever the brand's accent is. A red accent must never colour a number that went up.
+- **The entity's identity, never the source's.** The theme started from another company's design
+  language. Creatives show the entity's own name and logo — never the source brand's name, logo or
+  imagery, and nothing that suggests an affiliation.
+- **No theme? Carry on quietly**, exactly as with no library.
+
+For a Skilllet that renders anything, paste this beside the nine-line block:
+
+```markdown
+## Brand theme (Shared Profiles)
+
+Before picking colours, fonts or a logo for anything you render, look in the library for
+`brand/theme.resolved.json` (the user) or `businesses/<slug>/brand/theme.resolved.json` (a business).
+If several could apply, ask once whose brand this piece wears. Use its `light`/`dark` roles, `fonts`,
+`radius` and `logo` as the default brand layer; anything the user asks to change for this output applies
+to this output only and is never written back. Never theme semantic colours (up/down, success/error).
+Show the entity's own name and logo, never the source design's brand. If its `revision` is behind
+`theme.json`, run `node <shared-profiles>/scripts/ioc.mjs theme build` if you can. No theme: carry on quietly.
+```
+
+## Why the theme is JSON when everything else is Markdown
+
+A brand theme is a few hundred tokens that renderers consume — colours, sizes, references between them.
+That is structured data, and JSON is the honest format for it. It's still plain text that diffs well,
+the `- **Theme:**` line in the profile is the human-readable record that it exists, and `DESIGN.md`
+keeps the prose. `theme.resolved.json` is exactly the "disposable cache built from the source" this
+convention already allows for: delete it and `ioc theme build` puts it back.
 
 ## Why Markdown and not a database
 

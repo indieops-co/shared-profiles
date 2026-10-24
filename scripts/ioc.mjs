@@ -11,6 +11,7 @@
 //   node ioc.mjs show <slug>                 print a business profile
 //   node ioc.mjs add <name>                  add a business to an existing library
 //   node ioc.mjs slug <name>                 what slug a name resolves to
+//   node ioc.mjs theme <command>             brand themes (see: ioc theme --help)
 //
 // Zero dependencies. Node 18+.
 
@@ -33,6 +34,7 @@ ioc — IndieOps Shared Profiles
   add <name>                   add a business to an existing library
   remove <slug>                move a business to businesses/_removed/ (nothing deleted)
   slug <name>                  show the slug a name resolves to
+  theme <command>              a brand theme for you or a business (ioc theme --help)
 
 The library path is the first of these that applies:
   1. $INDIEOPS_HOME
@@ -187,6 +189,13 @@ async function main() {
 
   if (!cmd || cmd === '--help' || cmd === '-h') { say(HELP); return; }
 
+  if (cmd === 'theme') {
+    // Loaded only when asked for, so the rest of ioc stays as small as it always was.
+    const { main: theme } = await import('./theme/cli.mjs');
+    process.exitCode = await theme(rest, { lib, slugify });
+    return;
+  }
+
   if (cmd === 'where') {
     say(lib);
     say(existsSync(lib) ? '(exists)' : '(not created yet — run: ioc init)');
@@ -246,7 +255,7 @@ async function main() {
       } catch { /* no notes yet */ }
 
       if (!existsSync(profile)) {
-        rows.push({ slug: e.name, when: 'no profile.md', order: -1, skills, broken: true });
+        rows.push({ slug: e.name, when: 'no profile.md', order: -1, skills, theme: '—', broken: true });
         continue;
       }
       // Prefer the file's own "Last updated:" line. mtime is wrong after a git
@@ -264,14 +273,20 @@ async function main() {
         const n = Math.max(0, Math.floor((Date.now() - order) / 86400000));
         when = (n === 0 ? 'today' : n === 1 ? 'yesterday' : `${n} days ago`) + ' (file date)';
       }
-      rows.push({ slug: e.name, when, order, skills, broken: false });
+      let theme = '—';
+      try {
+        const t = JSON.parse(await readFile(join(dir, e.name, 'brand', 'theme.json'), 'utf8'));
+        theme = t.source?.displayName ? `${t.source.displayName}` : 'yes';
+      } catch { /* no theme */ }
+      rows.push({ slug: e.name, when, order, skills, theme, broken: false });
     }
     rows.sort((a, b) => b.order - a.order);
 
     const w = Math.max(8, ...rows.map((r) => r.slug.length));
     say(`\n${lib}\n`);
-    say(`  ${'BUSINESS'.padEnd(w)}  LAST UPDATED     SKILLETS USED`);
-    for (const r of rows) say(`  ${r.slug.padEnd(w)}  ${r.when.padEnd(15)}  ${r.skills.join(', ') || '—'}`);
+    const tw = Math.max(5, ...rows.map((r) => r.theme.length));
+    say(`  ${'BUSINESS'.padEnd(w)}  LAST UPDATED     ${'THEME'.padEnd(tw)}  SKILLLETS USED`);
+    for (const r of rows) say(`  ${r.slug.padEnd(w)}  ${r.when.padEnd(15)}  ${r.theme.padEnd(tw)}  ${r.skills.join(', ') || '—'}`);
     if (rows.some((r) => r.broken)) {
       say(`\n  ⚠ A business above has no profile.md. Run: ioc add "<its real name>" to create one,`);
       say(`    or delete the folder if it was a mistake.`);
