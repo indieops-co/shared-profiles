@@ -1,0 +1,544 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Shared Profiles — IndieOps Skilllet 2026-15</title>
+<meta name="description" content="One folder of plain notes on your computer, your profile and one per business, that every IndieOps Skilllet reads and writes, plus a brand theme for each that starts from an open design system and is tuned in a live preview. Install it once and they stop asking.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,900&family=Montserrat:wght@400;500;600&display=swap">
+<style>
+  /* ── IndieOps guide · warm cream + ink + one accent ──────────────────────
+     Swap --accent and every guide in the catalogue changes with it. */
+  :root{
+    --paper:#F7F3EA; --raised:#FFFDF8; --sunk:#EFE9DB;
+    --ink:#1A1712; --ink-2:#554C3F; --ink-3:#8B8171;
+    --rule:#E3DBCB; --rule-2:#CFC5B0;
+    --accent:#A8731F; --accent-ink:#8A5D13; --accent-soft:#F2E7CF;
+    --maxw:44rem;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --paper:#151209; --raised:#1D1911; --sunk:#100E08;
+      --ink:#EFE9DA; --ink-2:#BCB3A1; --ink-3:#8B8372;
+      --rule:#2E281C; --rule-2:#433B2A;
+      --accent:#D9A441; --accent-ink:#E8BC69; --accent-soft:#2A2211;
+    }
+  }
+  :root[data-theme="dark"]{
+    --paper:#151209; --raised:#1D1911; --sunk:#100E08;
+    --ink:#EFE9DA; --ink-2:#BCB3A1; --ink-3:#8B8372;
+    --rule:#2E281C; --rule-2:#433B2A;
+    --accent:#D9A441; --accent-ink:#E8BC69; --accent-soft:#2A2211;
+  }
+
+  *{box-sizing:border-box}
+  html{-webkit-text-size-adjust:100%}
+  body{
+    margin:0; background:var(--paper); color:var(--ink);
+    font-family:"Montserrat",-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;
+    font-size:17px; line-height:1.72; -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:var(--maxw);margin:0 auto;padding-inline:24px;padding-block:0 96px}
+
+  /* ── theme toggle: one button, one icon (sun = Light, moon = Dark, brain = Auto); each press steps Light → Dark → Auto.
+     Square, rounded, neutral only. First page's header only, never fixed or sticky. ── */
+  .theme{position:absolute;top:16px;right:16px;z-index:10;display:grid;place-items:center;width:34px;height:34px;padding:0;
+    appearance:none;background:var(--raised);border:1px solid var(--rule-2);border-radius:8px;color:var(--ink-2);cursor:pointer}
+  .theme:hover{color:var(--ink);background:var(--sunk)}
+  .theme:focus-visible{outline:2px solid var(--ink);outline-offset:1px}
+  .theme svg{display:none;width:17px;height:17px}
+  .theme[data-mode="light"] .ic-light,.theme[data-mode="dark"] .ic-dark,.theme[data-mode="auto"] .ic-auto{display:block}
+  @media print{.theme{display:none}}
+
+  /* ── masthead: small mark, title, then two tight lines under it ── */
+  header.mast{text-align:center;padding-block:76px 46px}
+  .mark{display:block;margin:0 auto 26px;width:46px;height:46px;color:var(--accent)}
+  .kicker{
+    font-size:13px;letter-spacing:.08em;color:var(--ink-3);
+    margin:0 0 18px;font-weight:600;
+  }
+  .kicker b{color:var(--accent-ink);font-weight:600}
+  h1{
+    font-family:"Fraunces",Georgia,"Times New Roman",serif;font-weight:900;
+    font-size:clamp(40px,8.5vw,64px);line-height:1.02;letter-spacing:-.02em;
+    margin:0 0 22px;text-wrap:balance;
+  }
+  .mast .problem{font-size:19px;line-height:1.5;color:var(--ink);margin:0 auto 6px;max-width:30rem}
+  .mast .does{font-size:16px;line-height:1.5;color:var(--ink-2);margin:0 auto;max-width:32rem}
+
+  /* ── guide body ── */
+  main{border-top:1px solid var(--rule);padding-top:8px}
+  h2{
+    font-family:"Fraunces",Georgia,serif;font-weight:600;
+    font-size:clamp(26px,4.4vw,34px);line-height:1.18;letter-spacing:-.012em;
+    margin:64px 0 18px;text-wrap:balance;
+  }
+  h3{font-size:15px;font-weight:600;letter-spacing:.01em;margin:38px 0 10px}
+  h4{font-size:13px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-3);margin:30px 0 8px}
+  p{margin:0 0 1.15em}
+  a{color:var(--accent-ink);text-decoration:underline;text-underline-offset:2px;text-decoration-thickness:1px}
+  a:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:2px}
+  /* links in the guide body wear the hummingbird underline (BRAND.md "The HTML guide"): bold ink over a
+     2px strip of the six band colours, thickening to 4px on hover. Same as .link on indieops.co. */
+  main a{color:var(--ink);font-weight:700;text-decoration:none;padding-bottom:2px;
+    background:linear-gradient(90deg,#FF6FA3,#F0A800,#2A8FEA,#00CF6A,#B10EBB,#8A7BFF) 0 100%/100% 2px no-repeat;
+    transition:background-size .15s}
+  main a:hover{background-size:100% 4px}
+  main a:focus-visible{outline:2px solid var(--ink);outline-offset:3px}
+  strong{font-weight:600}
+  ul,ol{margin:0 0 1.3em;padding-left:1.25em}
+  li{margin-bottom:.5em}
+  li::marker{color:var(--ink-3)}
+  hr{border:0;border-top:1px solid var(--rule);margin:52px 0}
+  code{font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace;font-size:.87em;
+    background:var(--sunk);padding:2px 6px;border-radius:4px}
+  pre{background:var(--sunk);border:1px solid var(--rule);border-radius:8px;
+    padding:18px 20px;overflow-x:auto;margin:0 0 1.5em;line-height:1.6}
+  pre code{background:none;padding:0;font-size:13px}
+  blockquote{margin:0 0 1.5em;padding:2px 0 2px 22px;border-left:3px solid var(--accent);
+    color:var(--ink-2);font-size:17px}
+  blockquote p:last-child{margin-bottom:0}
+  .scroll{overflow-x:auto;margin:0 0 1.6em}
+  table{border-collapse:collapse;width:100%;font-size:15px;min-width:min(100%,420px)}
+  th,td{text-align:left;padding:10px 14px;border-bottom:1px solid var(--rule);vertical-align:top}
+  th{font-size:11.5px;letter-spacing:.07em;text-transform:uppercase;color:var(--ink-3);
+    font-weight:600;border-bottom:1px solid var(--rule-2)}
+
+  /* ── chooser ── */
+  .chooser{margin-top:96px;padding-top:52px;border-top:2px solid var(--ink)}
+  /* Three cards need more width than a column of prose does. */
+  @media (min-width:900px){
+    .chooser{width:min(64rem,calc(100vw - 48px));margin-inline:calc((44rem - min(64rem,100vw - 48px)) / 2)}
+  }
+  .eyebrow{font-size:11.5px;letter-spacing:.2em;text-transform:uppercase;color:var(--ink-3);
+    margin:0 0 12px;font-weight:600}
+  .chooser h2{margin-top:0}
+  .chooser-lede{color:var(--ink-2);max-width:34rem;margin-bottom:12px}
+  .pick-group{margin-top:42px}
+  .pick-group h3{
+    font-family:"Fraunces",Georgia,serif;font-weight:600;font-size:19px;letter-spacing:-.005em;
+    color:var(--ink);margin:0 0 16px;padding-bottom:10px;border-bottom:1px solid var(--rule);
+    text-transform:none;
+  }
+  .pick-group h3::before{content:"“";color:var(--ink-3);margin-right:1px}
+  .pick-group h3::after{content:"”";color:var(--ink-3);margin-left:1px}
+  #io-new h3::before,#io-new h3::after{content:none}
+  /* auto-FILL, not auto-fit: auto-fit collapses the empty tracks, which makes a
+     lone card stretch the full width and look like a mistake. auto-fill keeps
+     the empty columns, so one card is card-sized and three fill the row. */
+  .picks{display:grid;grid-template-columns:repeat(auto-fill,minmax(17rem,1fr));gap:14px}
+  @media (max-width:600px){.picks{grid-template-columns:1fr}}
+  .pick{
+    display:flex;flex-direction:column;gap:7px;padding:17px 18px 15px;
+    background:var(--raised);border:1px solid var(--rule-2);border-radius:10px;
+    text-decoration:none;color:inherit;transition:border-color .15s,transform .15s;
+  }
+  .pick:hover{border-color:var(--accent);transform:translateY(-1px)}
+  .pick-lead{border-color:var(--accent);background:var(--accent-soft)}
+  .pick-id{font-family:ui-monospace,Menlo,monospace;font-size:10.5px;letter-spacing:.06em;color:var(--ink-3)}
+  .pick-name{font-family:"Fraunces",Georgia,serif;font-weight:600;font-size:20px;line-height:1.1}
+  .pick-problem{font-size:14px;line-height:1.5;color:var(--ink-2)}
+  .pick-req{font-size:11.5px;color:var(--ink-3);margin-top:auto;padding-top:4px}
+  .chooser-foot{margin-top:48px;text-align:center}
+  .pill{
+    display:inline-block;padding:13px 30px;border-radius:999px;
+    background:var(--ink);color:var(--paper);text-decoration:none;
+    font-size:14.5px;font-weight:600;letter-spacing:.01em;
+  }
+  .pill:hover{background:var(--accent-ink);color:#FFFDF8}
+
+  footer{margin-top:64px;padding-top:22px;border-top:1px solid var(--rule);
+    font-size:13px;color:var(--ink-3);text-align:center}
+  footer p{margin:0 0 6px}
+  footer a{color:var(--ink-3)}
+
+  @media print{
+    body{font-size:11.5pt;background:#fff;color:#000}
+    .wrap{max-width:none;padding:0}
+    h2,h3{page-break-after:avoid} pre,table,.pick{page-break-inside:avoid}
+    .chooser{page-break-before:always}
+  }
+  @media (prefers-reduced-motion:reduce){*{transition:none!important}}
+  @media (max-width:520px){ header.mast{padding-block:64px 36px} .wrap{padding-inline:20px} }
+</style>
+</head>
+<body>
+
+<button type="button" class="theme" data-mode="auto" aria-label="Theme: Auto. Switch to Light" title="Theme: Auto">
+  <svg class="ic-light" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><circle cx="10" cy="10" r="3.4"/><path d="M10 2.5v1.8M10 15.7v1.8M2.5 10h1.8M15.7 10h1.8M4.7 4.7l1.3 1.3M14 14l1.3 1.3M4.7 15.3 6 14M14 6l1.3-1.3"/></svg>
+  <svg class="ic-dark" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" aria-hidden="true"><path d="M16 12.2A6.5 6.5 0 0 1 7.8 4a6.5 6.5 0 1 0 8.2 8.2z"/></svg>
+  <svg class="ic-auto" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5a3 3 0 1 0-5.997.125 4 4 0 0 0-2.526 5.77 4 4 0 0 0 .556 6.588A4 4 0 1 0 12 18Z"/><path d="M12 5a3 3 0 1 1 5.997.125 4 4 0 0 1 2.526 5.77 4 4 0 0 1-.556 6.588A4 4 0 1 1 12 18Z"/><path d="M15 13a4.5 4.5 0 0 1-3-4 4.5 4.5 0 0 1-3 4"/><path d="M17.6 6.5a3 3 0 0 0 .4-1.375M6.003 5.125A3 3 0 0 0 6.401 6.5M3.477 10.896a4 4 0 0 1 .585-.396M19.938 10.5a4 4 0 0 1 .585.396M6 18a4 4 0 0 1-1.967-.516M19.967 17.484A4 4 0 0 1 18 18"/></svg>
+</button>
+
+<div class="wrap">
+
+  <header class="mast">
+    <svg class="mark" viewBox="0 0 40 40" fill="none" aria-hidden="true">
+      <rect x="2.2" y="2.2" width="35.6" height="35.6" rx="9" stroke="currentColor" stroke-width="2.4"/>
+      <rect x="11" y="11" width="13" height="13" rx="3" fill="currentColor"/>
+    </svg>
+    <p class="kicker">IndieOps &nbsp;·&nbsp; <b>Skilllet 2026-15</b></p>
+    <h1>Shared Profiles</h1>
+    <p class="problem">Our other Skilllets reference this for your and your clients' profiles &amp; preferences.</p>
+    <p class="does">One folder of plain notes on your computer, your profile and one per business, that every IndieOps Skilllet reads and writes, plus a brand theme for each that starts from an open design system and is tuned in a live preview. Install it once and they stop asking.</p>
+  </header>
+
+  <main>
+<h2>Start here</h2>
+<p>Drop the <code>shared-profiles</code> folder into <code>~/.claude/skills/</code> (or upload the zip on claude.ai under <strong>Settings → Capabilities → Skills</strong>), then say:</p>
+<pre><code>Set up my shared profiles. My business is Acme Plumbing &amp; Heating.</code></pre>
+<p>That creates one folder on your computer, <code>~/.indieops/</code>, with a page about you and a page about the business. From then on every IndieOps Skilllet reads it before asking you anything, and writes back what it learns. Type a fact once; every Skilllet knows it.</p>
+<p>Want it to look like you too? Say <em>"give Acme a brand theme"</em> and keep reading.</p>
+<hr>
+<h2>What's in the folder</h2>
+<pre><code>~/.indieops/
+├── me.md                     you: name, how you write, your brand defaults
+├── brand/                    your brand theme (optional)
+└── businesses/
+    └── acme-plumbing-heating/
+        ├── profile.md        the business: what it does, where, hours, domains, services
+        ├── brand/            the business's brand theme (optional)
+        └── notes/            each Skilllet's own working notes</code></pre>
+<p>It's all plain text. Open any of it, fix a typo, back it up, put it in git, or email it to an assistant. <strong>Nothing secret ever goes in here</strong>: no passwords, API keys or card details. Those stay in your password manager and environment variables, because this folder will end up in a backup or a screen share one day.</p>
+<p>Two pages, because Skilllets split two ways. Some care about <em>you</em> (your name, your voice, your look) and some care about a <em>business</em> (its domain, its hours, its services). Each reads what it needs.</p>
+<hr>
+<h2>Brand themes</h2>
+<p>A brand theme is everything about how you, or a client, <em>look</em>: a colour for every job (buttons and links, backgrounds, headings, body text, borders), fonts, type sizes, corners, spacing, and a short list of do's and don'ts. Any Skilllet that makes something you look at can read it, so a report, a social post and a landing page all come out wearing the same brand.</p>
+<h3>Start from a real design language</h3>
+<p>You don't start from a blank page. You start from one of the design languages in <strong><a href="https://github.com/VoltAgent/awesome-design-md">awesome-design-md</a></strong>, VoltAgent's open collection of DESIGN.md files describing 80-odd well-known products: warm editorial ones, crisp technical ones, playful ones, dark and cinematic ones. Each comes with its colours, type scale, components and rules.</p>
+<p>Tell Claude what the brand should feel like, or let it read your profile, and it shows you a shortlist of eight to twelve that fit, each with a link to preview it. Pick one.</p>
+<h3>Then make it yours</h3>
+<p>The design you pick is only the starting point. Claude asks for the three things that make it <em>yours</em>: your brand colour, your logo, and your fonts if you have them. Those are kept as a separate layer on top, so you can switch to a different starting design later and keep every change you made.</p>
+<p>Nothing you make ever wears the starting design's name or logo. A theme that starts from the Stripe design language is <em>your</em> brand with Stripe's sense of spacing and type, not a Stripe lookalike.</p>
+<h3>See it, change it</h3>
+<p>Open <code>brand/preview.html</code> in your browser. It shows your brand on:</p>
+<ul><li>a <strong>spec sheet</strong>: every colour, the type scale, corners, spacing and components, with contrast scores</li><li>two <strong>social posts</strong> at real Instagram sizes</li><li>a <strong>landing page</strong> hero with cards</li><li>a <strong>report page</strong> with stat tiles and a table</li><li>an <strong>email header</strong>, using only what inboxes actually support</li></ul>
+<p>Switch between light, dark and side by side. Dark mode is worked out for you, and its text always passes accessibility contrast. Every control on the left updates every layout as you drag it. Undo works.</p>
+<p>The preview never changes your files by itself. When you're happy, press <strong>Copy edits</strong> and paste them to Claude ("apply these theme edits"). That way nothing changes behind your back, and if a Skilllet changed the theme while you were editing, Claude tells you which values clash and asks which to keep.</p>
+<h3>Things worth knowing</h3>
+<ul><li><strong>Fonts.</strong> Most well-known brands use fonts you can't use, so every theme uses an open Google Font in its place, picked from what the original design itself recommends. Offline, the preview shows fallback fonts and says so.</li><li><strong>Up and down colours never change.</strong> In reports, a fall is always red and a rise always green, whatever your brand colour is. A red brand colour must never make a good month look bad.</li><li><strong>Older designs.</strong> A few designs in the collection are written as prose rather than structured tokens. Claude reads those and checks its reading with you.</li><li><strong>Offline or behind a company proxy?</strong> Download the DESIGN.md yourself and Claude imports it from the file.</li><li><strong>The licence travels with it.</strong> Each imported design keeps its MIT notice beside your theme.</li></ul>
+<hr>
+<h2>Commands</h2>
+<p>You don't need these. Claude runs them for you. They're here if you like a terminal:</p>
+<pre><code>node scripts/ioc.mjs where                      where the library lives
+node scripts/ioc.mjs init --business "Name"     create it
+node scripts/ioc.mjs add "Name"                 add a business
+node scripts/ioc.mjs list                       every business, when it was last updated, its theme
+node scripts/ioc.mjs show &lt;slug&gt;                print a profile
+
+node scripts/ioc.mjs theme catalog              the designs you can start from
+node scripts/ioc.mjs theme import &lt;design&gt; --business &lt;name&gt;
+node scripts/ioc.mjs theme set --business &lt;name&gt; accent "#0a7c66" fonts.display Fraunces
+node scripts/ioc.mjs theme build --business &lt;name&gt; --open
+node scripts/ioc.mjs theme apply-edits - --business &lt;name&gt;
+node scripts/ioc.mjs theme check --all</code></pre>
+<p>Use <code>--me</code> instead of <code>--business</code> for your own brand. <code>node scripts/ioc.mjs theme --help</code> lists everything you can set.</p>
+<hr>
+<h2>Moving it</h2>
+<p>The library lives in the first of these that exists:</p>
+<ol><li>the folder in the <code>INDIEOPS_HOME</code> environment variable</li><li>the path written inside a <code>.indieops-home</code> file in the folder you're working in</li><li><code>~/.indieops</code></li></ol>
+<p>Want it in Dropbox, iCloud or a git repo? Set <code>INDIEOPS_HOME</code> and it moves. A git repo is a good home: plain text diffs well, so you get a history of every fact and every brand change.</p>
+<hr>
+<h2>For Skilllet authors</h2>
+<p><code>CONVENTION.md</code> is the whole spec. Reading the profiles is nine lines of Markdown in your <code>SKILL.md</code>. If your Skilllet renders anything, one more paragraph has it read the brand theme too: one resolved file with both light and dark, open fonts and a logo. The four rules:</p>
+<ol><li><strong>Read before you ask.</strong> If it's in the library, don't ask again.</li><li><strong>Add missing facts; never overwrite one another Skilllet set.</strong> Flag the conflict and let the user decide.</li><li><strong>Your own findings go in <code>notes/&lt;your-skill&gt;.md</code>.</strong> Nothing else writes there.</li><li><strong>Never require it.</strong> A missing library, or a missing theme, is not an error.</li></ol>
+  </main>
+
+<!-- io:chooser -->
+  <style>
+    .pick-top{display:flex;align-items:center;justify-content:space-between;gap:8px}
+    .pick-kind{font-size:10px;letter-spacing:.09em;text-transform:uppercase;color:var(--ink-3);
+      border:1px solid var(--rule-2);border-radius:999px;padding:1px 8px;line-height:1.6}
+    .pick-runs{display:flex;align-items:center;gap:7px;margin-top:auto;padding-top:8px;color:var(--ink-3)}
+    .pick-req+.pick-runs{margin-top:0;padding-top:2px}
+    .pick-runs svg{width:14px;height:14px;fill:currentColor;flex:none}
+    .pick-runs i{width:1px;height:12px;background:var(--rule-2);margin:0 3px}
+    .pick:hover .pick-runs{color:var(--ink-2)}
+  </style>
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><symbol id="io-i-macos" viewBox="0 0 24 24"><path d="M12.152 6.896c-.948 0-2.415-1.078-3.96-1.04-2.04.027-3.91 1.183-4.961 3.014-2.117 3.675-.546 9.103 1.519 12.09 1.013 1.454 2.208 3.09 3.792 3.039 1.52-.065 2.09-.987 3.935-.987 1.831 0 2.35.987 3.96.948 1.637-.026 2.676-1.48 3.676-2.948 1.156-1.688 1.636-3.325 1.662-3.415-.039-.013-3.182-1.221-3.22-4.857-.026-3.04 2.48-4.494 2.597-4.559-1.429-2.09-3.623-2.324-4.39-2.376-2-.156-3.675 1.09-4.61 1.09zM15.53 3.83c.843-1.012 1.4-2.427 1.245-3.83-1.207.052-2.662.805-3.532 1.818-.78.896-1.454 2.338-1.273 3.714 1.338.104 2.715-.688 3.559-1.701"/></symbol><symbol id="io-i-windows" viewBox="0 0 24 24"><path d="M0,0H11.377V11.372H0ZM12.623,0H24V11.372H12.623ZM0,12.623H11.377V24H0Zm12.623,0H24V24H12.623"/></symbol><symbol id="io-i-linux" viewBox="0 0 24 24"><path d="M12.504 0c-.155 0-.315.008-.48.021-4.226.333-3.105 4.807-3.17 6.298-.076 1.092-.3 1.953-1.05 3.02-.885 1.051-2.127 2.75-2.716 4.521-.278.832-.41 1.684-.287 2.489a.424.424 0 00-.11.135c-.26.268-.45.6-.663.839-.199.199-.485.267-.797.4-.313.136-.658.269-.864.68-.09.189-.136.394-.132.602 0 .199.027.4.055.536.058.399.116.728.04.97-.249.68-.28 1.145-.106 1.484.174.334.535.47.94.601.81.2 1.91.135 2.774.6.926.466 1.866.67 2.616.47.526-.116.97-.464 1.208-.946.587-.003 1.23-.269 2.26-.334.699-.058 1.574.267 2.577.2.025.134.063.198.114.333l.003.003c.391.778 1.113 1.132 1.884 1.071.771-.06 1.592-.536 2.257-1.306.631-.765 1.683-1.084 2.378-1.503.348-.199.629-.469.649-.853.023-.4-.2-.811-.714-1.376v-.097l-.003-.003c-.17-.2-.25-.535-.338-.926-.085-.401-.182-.786-.492-1.046h-.003c-.059-.054-.123-.067-.188-.135a.357.357 0 00-.19-.064c.431-1.278.264-2.55-.173-3.694-.533-1.41-1.465-2.638-2.175-3.483-.796-1.005-1.576-1.957-1.56-3.368.026-2.152.236-6.133-3.544-6.139zm.529 3.405h.013c.213 0 .396.062.584.198.19.135.33.332.438.533.105.259.158.459.166.724 0-.02.006-.04.006-.06v.105a.086.086 0 01-.004-.021l-.004-.024a1.807 1.807 0 01-.15.706.953.953 0 01-.213.335.71.71 0 00-.088-.042c-.104-.045-.198-.064-.284-.133a1.312 1.312 0 00-.22-.066c.05-.06.146-.133.183-.198.053-.128.082-.264.088-.402v-.02a1.21 1.21 0 00-.061-.4c-.045-.134-.101-.2-.183-.333-.084-.066-.167-.132-.267-.132h-.016c-.093 0-.176.03-.262.132a.8.8 0 00-.205.334 1.18 1.18 0 00-.09.4v.019c.002.089.008.179.02.267-.193-.067-.438-.135-.607-.202a1.635 1.635 0 01-.018-.2v-.02a1.772 1.772 0 01.15-.768c.082-.22.232-.406.43-.533a.985.985 0 01.594-.2zm-2.962.059h.036c.142 0 .27.048.399.135.146.129.264.288.344.465.09.199.14.4.153.667v.004c.007.134.006.2-.002.266v.08c-.03.007-.056.018-.083.024-.152.055-.274.135-.393.2.012-.09.013-.18.003-.267v-.015c-.012-.133-.04-.2-.082-.333a.613.613 0 00-.166-.267.248.248 0 00-.183-.064h-.021c-.071.006-.13.04-.186.132a.552.552 0 00-.12.27.944.944 0 00-.023.33v.015c.012.135.037.2.08.334.046.134.098.2.166.268.01.009.02.018.034.024-.07.057-.117.07-.176.136a.304.304 0 01-.131.068 2.62 2.62 0 01-.275-.402 1.772 1.772 0 01-.155-.667 1.759 1.759 0 01.08-.668 1.43 1.43 0 01.283-.535c.128-.133.26-.2.418-.2zm1.37 1.706c.332 0 .733.065 1.216.399.293.2.523.269 1.052.468h.003c.255.136.405.266.478.399v-.131a.571.571 0 01.016.47c-.123.31-.516.643-1.063.842v.002c-.268.135-.501.333-.775.465-.276.135-.588.292-1.012.267a1.139 1.139 0 01-.448-.067 3.566 3.566 0 01-.322-.198c-.195-.135-.363-.332-.612-.465v-.005h-.005c-.4-.246-.616-.512-.686-.71-.07-.268-.005-.47.193-.6.224-.135.38-.271.483-.336.104-.074.143-.102.176-.131h.002v-.003c.169-.202.436-.47.839-.601.139-.036.294-.065.466-.065zm2.8 2.142c.358 1.417 1.196 3.475 1.735 4.473.286.534.855 1.659 1.102 3.024.156-.005.33.018.513.064.646-1.671-.546-3.467-1.089-3.966-.22-.2-.232-.335-.123-.335.59.534 1.365 1.572 1.646 2.757.13.535.16 1.104.021 1.67.067.028.135.06.205.067 1.032.534 1.413.938 1.23 1.537v-.043c-.06-.003-.12 0-.18 0h-.016c.151-.467-.182-.825-1.065-1.224-.915-.4-1.646-.336-1.77.465-.008.043-.013.066-.018.135-.068.023-.139.053-.209.064-.43.268-.662.669-.793 1.187-.13.533-.17 1.156-.205 1.869v.003c-.02.334-.17.838-.319 1.35-1.5 1.072-3.58 1.538-5.348.334a2.645 2.645 0 00-.402-.533 1.45 1.45 0 00-.275-.333c.182 0 .338-.03.465-.067a.615.615 0 00.314-.334c.108-.267 0-.697-.345-1.163-.345-.467-.931-.995-1.788-1.521-.63-.4-.986-.87-1.15-1.396-.165-.534-.143-1.085-.015-1.645.245-1.07.873-2.11 1.274-2.763.107-.065.037.135-.408.974-.396.751-1.14 2.497-.122 3.854a8.123 8.123 0 01.647-2.876c.564-1.278 1.743-3.504 1.836-5.268.048.036.217.135.289.202.218.133.38.333.59.465.21.201.477.335.876.335.039.003.075.006.11.006.412 0 .73-.134.997-.268.29-.134.52-.334.74-.4h.005c.467-.135.835-.402 1.044-.7zm2.185 8.958c.037.6.343 1.245.882 1.377.588.134 1.434-.333 1.791-.765l.211-.01c.315-.007.577.01.847.268l.003.003c.208.199.305.53.391.876.085.4.154.78.409 1.066.486.527.645.906.636 1.14l.003-.007v.018l-.003-.012c-.015.262-.185.396-.498.595-.63.401-1.746.712-2.457 1.57-.618.737-1.37 1.14-2.036 1.191-.664.053-1.237-.2-1.574-.898l-.005-.003c-.21-.4-.12-1.025.056-1.69.176-.668.428-1.344.463-1.897.037-.714.076-1.335.195-1.814.12-.465.308-.797.641-.984l.045-.022zm-10.814.049h.01c.053 0 .105.005.157.014.376.055.706.333 1.023.752l.91 1.664.003.003c.243.533.754 1.064 1.189 1.637.434.598.77 1.131.729 1.57v.006c-.057.744-.48 1.148-1.125 1.294-.645.135-1.52.002-2.395-.464-.968-.536-2.118-.469-2.857-.602-.369-.066-.61-.2-.723-.4-.11-.2-.113-.602.123-1.23v-.004l.002-.003c.117-.334.03-.752-.027-1.118-.055-.401-.083-.71.043-.94.16-.334.396-.4.69-.533.294-.135.64-.202.915-.47h.002v-.002c.256-.268.445-.601.668-.838.19-.201.38-.336.663-.336zm7.159-9.074c-.435.201-.945.535-1.488.535-.542 0-.97-.267-1.28-.466-.154-.134-.28-.268-.373-.335-.164-.134-.144-.333-.074-.333.109.016.129.134.199.2.096.066.215.2.36.333.292.2.68.467 1.167.467.485 0 1.053-.267 1.398-.466.195-.135.445-.334.648-.467.156-.136.149-.267.279-.267.128.016.034.134-.147.332a8.097 8.097 0 01-.69.468zm-1.082-1.583V5.64c-.006-.02.013-.042.029-.05.074-.043.18-.027.26.004.063 0 .16.067.15.135-.006.049-.085.066-.135.066-.055 0-.092-.043-.141-.068-.052-.018-.146-.008-.163-.065zm-.551 0c-.02.058-.113.049-.166.066-.047.025-.086.068-.14.068-.05 0-.13-.02-.136-.068-.01-.066.088-.133.15-.133.08-.031.184-.047.259-.005.019.009.036.03.03.05v.02h.003z"/></symbol><symbol id="io-i-claude" viewBox="0 0 24 24"><path d="m4.7144 15.9555 4.7174-2.6471.079-.2307-.079-.1275h-.2307l-.7893-.0486-2.6956-.0729-2.3375-.0971-2.2646-.1214-.5707-.1215-.5343-.7042.0546-.3522.4797-.3218.686.0608 1.5179.1032 2.2767.1578 1.6514.0972 2.4468.255h.3886l.0546-.1579-.1336-.0971-.1032-.0972L6.973 9.8356l-2.55-1.6879-1.3356-.9714-.7225-.4918-.3643-.4614-.1578-1.0078.6557-.7225.8803.0607.2246.0607.8925.686 1.9064 1.4754 2.4893 1.8336.3643.3035.1457-.1032.0182-.0728-.164-.2733-1.3539-2.4467-1.445-2.4893-.6435-1.032-.17-.6194c-.0607-.255-.1032-.4674-.1032-.7285L6.287.1335 6.6997 0l.9957.1336.419.3642.6192 1.4147 1.0018 2.2282 1.5543 3.0296.4553.8985.2429.8318.091.255h.1579v-.1457l.1275-1.706.2368-2.0947.2307-2.6957.0789-.7589.3764-.9107.7468-.4918.5828.2793.4797.686-.0668.4433-.2853 1.8517-.5586 2.9021-.3643 1.9429h.2125l.2429-.2429.9835-1.3053 1.6514-2.0643.7286-.8196.85-.9046.5464-.4311h1.0321l.759 1.1293-.34 1.1657-1.0625 1.3478-.8804 1.1414-1.2628 1.7-.7893 1.36.0729.1093.1882-.0183 2.8535-.607 1.5421-.2794 1.8396-.3157.8318.3886.091.3946-.3278.8075-1.967.4857-2.3072.4614-3.4364.8136-.0425.0304.0486.0607 1.5482.1457.6618.0364h1.621l3.0175.2247.7892.522.4736.6376-.079.4857-1.2142.6193-1.6393-.3886-3.825-.9107-1.3113-.3279h-.1822v.1093l1.0929 1.0686 2.0035 1.8092 2.5075 2.3314.1275.5768-.3218.4554-.34-.0486-2.2039-1.6575-.85-.7468-1.9246-1.621h-.1275v.17l.4432.6496 2.3436 3.5214.1214 1.0807-.17.3521-.6071.2125-.6679-.1214-1.3721-1.9246L14.38 17.959l-1.1414-1.9428-.1397.079-.674 7.2552-.3156.3703-.7286.2793-.6071-.4614-.3218-.7468.3218-1.4753.3886-1.9246.3157-1.53.2853-1.9004.17-.6314-.0121-.0425-.1397.0182-1.4328 1.9672-2.1796 2.9446-1.7243 1.8456-.4128.164-.7164-.3704.0667-.6618.4008-.5889 2.386-3.0357 1.4389-1.882.929-1.0868-.0062-.1579h-.0546l-6.3385 4.1164-1.1293.1457-.4857-.4554.0608-.7467.2307-.2429 1.9064-1.3114Z"/></symbol><symbol id="io-i-codex" viewBox="0 0 250 250"><path d="m84.3 5.1q3.7-1.5 7.7-2.6 3.9-1 7.9-1.6 4-0.5 8.1-0.6 4 0 8 0.5 20.7 2.4 37.1 17.7 0.1 0.1 0.4 0.3 0.1 0 0.2 0 0 0 0.2 0 0 0 0.1 0 0 0 0.1 0 5.2-1.4 10.7-1.9 5.4-0.4 10.7 0.1 5.5 0.4 10.7 1.9 5.2 1.3 10.1 3.6l0.6 0.4 1.6 0.8q5.2 2.5 9.7 6.1 4.7 3.4 8.6 7.7 3.8 4.3 6.9 9.2 3 4.8 5.2 10.2 4.3 10.5 4.3 22.1 0.2 2.1 0 4.2-0.1 2.2-0.2 4.3-0.3 2.1-0.7 4.3-0.4 2.1-0.9 4.1 0 0.2 0 0.4 0 0.2 0 0.5 0 0.1 0.1 0.4 0.1 0.1 0.3 0.3 12.3 12.6 16.3 30 6 29.7-12.2 53.5l-1.9 2.2q-3 3.5-6.5 6.4-3.4 3.1-7.3 5.5-3.8 2.4-8.1 4.2-4.1 1.9-8.5 3.2-0.3 0-0.4 0.2-0.3 0-0.4 0.1-0.1 0.1-0.3 0.4 0 0.1-0.1 0.3c-2.7 7.7-5.3 14.2-10.2 20.7-12.5 16.5-30.8 25.5-51.5 25.5q-24.6-0.1-43.6-18.1-0.2-0.1-0.4-0.2-0.2-0.1-0.4-0.1-0.2 0-0.3 0-0.3 0-0.4 0c-5.4 1.7-10.9 1.9-16.7 1.9q-3.5 0-7-0.5-3.4-0.4-6.9-1.2-3.3-0.8-6.6-2-3.3-1.2-6.4-2.8-3.3-1.6-6.4-3.6-3-2-5.8-4.3-3-2.3-5.5-5-2.5-2.6-4.6-5.6c-2.2-2.7-4.3-5.4-5.8-8.5q-0.8-1.6-1.6-3.2-0.6-1.7-1.3-3.3-0.7-1.7-1.2-3.4-0.5-1.6-1-3.4-1.1-4-1.6-7.9-0.6-4-0.6-8 0-4 0.6-8 0.4-4 1.4-8 0 0 0-0.1 0-0.1 0-0.1 0.2-0.2 0.2-0.3 0-0.1-0.2-0.1 0-0.2 0-0.3 0-0.1-0.1-0.1 0-0.2 0-0.2-0.1-0.1-0.1-0.1-2.4-2.5-4.6-5.2-2.1-2.7-4-5.4-1.7-3-3.2-6-1.5-3.1-2.6-6.3-0.8-2-1.3-4.1-0.7-2-1.1-4-0.4-2.1-0.7-4.2-0.2-2.2-0.4-4.3-0.2-2.8-0.1-5.6 0-2.8 0.3-5.4 0.1-2.8 0.6-5.6 0.4-2.8 1.1-5.5 7-23.1 26.9-36.3 4.3-2.9 8.2-4.5 4.5-1.9 9-3.2 0.2 0 0.3-0.1 0.1-0.2 0.3-0.3 0.1 0 0.1-0.3 0.1-0.1 0.1-0.2 1-3.1 2.2-6 1-2.9 2.5-5.7 1.5-3 3.2-5.6 1.7-2.7 3.7-5.1 2.5-3.2 5.3-5.9 3-2.8 6.1-5.4 3.2-2.4 6.8-4.4 3.5-2 7.2-3.5zm48.3 146.4c-2.3 0.1-4.4 1-6 2.8-1.5 1.6-2.4 3.7-2.4 5.9 0 2.3 0.9 4.4 2.4 6.2 1.6 1.6 3.7 2.5 6 2.6h50.4c2.4 0.1 4.8-0.6 6.5-2.4 1.7-1.6 2.8-4 2.8-6.4 0-2.4-1.1-4.7-2.8-6.3-1.7-1.8-4.1-2.6-6.5-2.4zm-56.7-64.9c-1.2-1.9-3-3.4-5.3-3.9-2.2-0.5-4.5-0.3-6.5 0.9-2 1.1-3.5 3-4.1 5.2-0.7 2.2-0.4 4.6 0.6 6.5l17.7 30.9-17.5 29.5c-1.2 2-1.6 4.5-1.1 6.8 0.7 2.3 2.1 4.1 4.1 5.3 2 1.2 4.4 1.6 6.7 0.9 2.2-0.5 4.2-1.9 5.4-3.9l20.1-34.1q0.7-0.9 0.9-2.1 0.3-1.1 0.3-2.3 0-1.2-0.3-2.2-0.2-1.2-0.8-2.2z"/></symbol><symbol id="io-i-gemini" viewBox="0 0 24 24"><path d="M11.04 19.32Q12 21.51 12 24q0-2.49.93-4.68.96-2.19 2.58-3.81t3.81-2.55Q21.51 12 24 12q-2.49 0-4.68-.93a12.3 12.3 0 0 1-3.81-2.58 12.3 12.3 0 0 1-2.58-3.81Q12 2.49 12 0q0 2.49-.96 4.68-.93 2.19-2.55 3.81a12.3 12.3 0 0 1-3.81 2.58Q2.49 12 0 12q2.49 0 4.68.96 2.19.93 3.81 2.55t2.55 3.81"/></symbol></defs></svg>
+  <section class="chooser" id="more">
+    <p class="eyebrow">The rest of the catalogue</p>
+    <h2>Which Skilllet do you need next?</h2>
+    <p class="chooser-lede">Sorted by the problem, not by the product. Each one is a folder you drop
+    next to your work — no account, no subscription, no dashboard to log into.</p>
+    
+      <div class="pick-group">
+        <h3>People can't find my business on Google</h3>
+        <div class="picks">
+        <a class="pick" href="https://indieops.co/skills/gbpcoach">
+          <span class="pick-top"><span class="pick-id">2026-13</span><span class="pick-kind">Skill</span></span>
+          <span class="pick-name">GBPCoach</span>
+          <span class="pick-problem">Google Maps decides whether a local business gets called, and nobody explains how.</span>
+          
+          <span class="pick-runs" role="img" aria-label="Runs on macOS, Windows, Linux. Works with Claude."><svg aria-hidden="true"><title>macOS</title><use href="#io-i-macos"/></svg><svg aria-hidden="true"><title>Windows</title><use href="#io-i-windows"/></svg><svg aria-hidden="true"><title>Linux</title><use href="#io-i-linux"/></svg><i></i><svg aria-hidden="true"><title>Claude</title><use href="#io-i-claude"/></svg></span>
+        </a>
+        <a class="pick" href="https://indieops.co/skills/gbpcoach-pro">
+          <span class="pick-top"><span class="pick-id">2026-14</span><span class="pick-kind">Skill</span></span>
+          <span class="pick-name">GBPCoach Pro</span>
+          <span class="pick-problem">You can see your own profile. You cannot see what the businesses beating you have done.</span>
+          <span class="pick-req">Works alongside GBPCoach</span>
+          <span class="pick-runs" role="img" aria-label="Runs on macOS 10.15+, Windows 10+, Linux (glibc 2.28+). Works with Claude."><svg aria-hidden="true"><title>macOS 10.15+</title><use href="#io-i-macos"/></svg><svg aria-hidden="true"><title>Windows 10+</title><use href="#io-i-windows"/></svg><svg aria-hidden="true"><title>Linux (glibc 2.28+)</title><use href="#io-i-linux"/></svg><i></i><svg aria-hidden="true"><title>Claude</title><use href="#io-i-claude"/></svg></span>
+        </a></div>
+      </div>
+      <div class="pick-group">
+        <h3>I need more work coming in</h3>
+        <div class="picks">
+        <a class="pick" href="https://indieops.co/skills/linkpanther">
+          <span class="pick-top"><span class="pick-id">2026-12</span><span class="pick-kind">Plugin</span></span>
+          <span class="pick-name">LinkPanther</span>
+          <span class="pick-problem">Your links are on somebody else's domain and you cannot change where they point.</span>
+          
+          <span class="pick-runs" role="img" aria-label="Runs on macOS 10.15+, Windows 10+, Linux (glibc 2.28+). Works with Claude."><svg aria-hidden="true"><title>macOS 10.15+</title><use href="#io-i-macos"/></svg><svg aria-hidden="true"><title>Windows 10+</title><use href="#io-i-windows"/></svg><svg aria-hidden="true"><title>Linux (glibc 2.28+)</title><use href="#io-i-linux"/></svg><i></i><svg aria-hidden="true"><title>Claude</title><use href="#io-i-claude"/></svg></span>
+        </a></div>
+      </div>
+      <div class="pick-group">
+        <h3>My emails aren't arriving</h3>
+        <div class="picks">
+        <a class="pick" href="https://indieops.co/skills/resend-ready">
+          <span class="pick-top"><span class="pick-id">2026-03</span><span class="pick-kind">Plugin</span></span>
+          <span class="pick-name">Resend Ready</span>
+          <span class="pick-problem">Your app needs to send email and you have never configured a sending domain.</span>
+          
+          <span class="pick-runs" role="img" aria-label="Runs on macOS 10.15+, Windows 10+, Linux (glibc 2.28+). Works with Claude."><svg aria-hidden="true"><title>macOS 10.15+</title><use href="#io-i-macos"/></svg><svg aria-hidden="true"><title>Windows 10+</title><use href="#io-i-windows"/></svg><svg aria-hidden="true"><title>Linux (glibc 2.28+)</title><use href="#io-i-linux"/></svg><i></i><svg aria-hidden="true"><title>Claude</title><use href="#io-i-claude"/></svg></span>
+        </a>
+        <a class="pick" href="https://indieops.co/skills/instantly-ready">
+          <span class="pick-top"><span class="pick-id">2026-05</span><span class="pick-kind">Skill</span></span>
+          <span class="pick-name">Instantly Ready</span>
+          <span class="pick-problem">Cold email infrastructure has nine moving parts and getting one wrong burns the domain.</span>
+          
+          <span class="pick-runs" role="img" aria-label="Runs on macOS, Windows, Linux. Works with Claude."><svg aria-hidden="true"><title>macOS</title><use href="#io-i-macos"/></svg><svg aria-hidden="true"><title>Windows</title><use href="#io-i-windows"/></svg><svg aria-hidden="true"><title>Linux</title><use href="#io-i-linux"/></svg><i></i><svg aria-hidden="true"><title>Claude</title><use href="#io-i-claude"/></svg></span>
+        </a></div>
+      </div>
+      <div class="pick-group">
+        <h3>I'm building something and the fiddly parts are eating the week</h3>
+        <div class="picks">
+        <a class="pick" href="https://indieops.co/skills/oauth-coach">
+          <span class="pick-top"><span class="pick-id">2026-02</span><span class="pick-kind">Skill</span></span>
+          <span class="pick-name">OAuth Coach</span>
+          <span class="pick-problem">Your Google sign-in screen says "some-project-84f2b" and nobody trusts it.</span>
+          
+          <span class="pick-runs" role="img" aria-label="Runs on macOS 10.15+, Windows 10+, Linux (glibc 2.28+). Works with Claude."><svg aria-hidden="true"><title>macOS 10.15+</title><use href="#io-i-macos"/></svg><svg aria-hidden="true"><title>Windows 10+</title><use href="#io-i-windows"/></svg><svg aria-hidden="true"><title>Linux (glibc 2.28+)</title><use href="#io-i-linux"/></svg><i></i><svg aria-hidden="true"><title>Claude</title><use href="#io-i-claude"/></svg></span>
+        </a>
+        <a class="pick" href="https://indieops.co/skills/approvalpilot">
+          <span class="pick-top"><span class="pick-id">2026-08</span><span class="pick-kind">Plugin</span></span>
+          <span class="pick-name">ApprovalPilot</span>
+          <span class="pick-problem">A good plan-mode session dies when the context window does.</span>
+          
+          <span class="pick-runs" role="img" aria-label="Runs on macOS 10.15+, Windows 10+, Linux (glibc 2.28+). Works with Claude."><svg aria-hidden="true"><title>macOS 10.15+</title><use href="#io-i-macos"/></svg><svg aria-hidden="true"><title>Windows 10+</title><use href="#io-i-windows"/></svg><svg aria-hidden="true"><title>Linux (glibc 2.28+)</title><use href="#io-i-linux"/></svg><i></i><svg aria-hidden="true"><title>Claude</title><use href="#io-i-claude"/></svg></span>
+        </a>
+        <a class="pick" href="https://indieops.co/skills/reminder-router">
+          <span class="pick-top"><span class="pick-id">2026-09</span><span class="pick-kind">App</span></span>
+          <span class="pick-name">Reminder Router</span>
+          <span class="pick-problem">Four AI sessions running and no idea which one needs you.</span>
+          
+          <span class="pick-runs" role="img" aria-label="Runs on macOS 11+. Works with Claude."><svg aria-hidden="true"><title>macOS 11+</title><use href="#io-i-macos"/></svg><i></i><svg aria-hidden="true"><title>Claude</title><use href="#io-i-claude"/></svg></span>
+        </a>
+        <a class="pick" href="https://indieops.co/skills/cavemaxx">
+          <span class="pick-top"><span class="pick-id">2026-16</span><span class="pick-kind">Plugin</span></span>
+          <span class="pick-name">CaveMaxx</span>
+          <span class="pick-problem">You asked a question and got an essay when a diagram would have done.</span>
+          
+          <span class="pick-runs" role="img" aria-label="Runs on macOS, Windows, Linux. Works with Claude."><svg aria-hidden="true"><title>macOS</title><use href="#io-i-macos"/></svg><svg aria-hidden="true"><title>Windows</title><use href="#io-i-windows"/></svg><svg aria-hidden="true"><title>Linux</title><use href="#io-i-linux"/></svg><i></i><svg aria-hidden="true"><title>Claude</title><use href="#io-i-claude"/></svg></span>
+        </a>
+        <a class="pick" href="https://indieops.co/skills/questionpilot">
+          <span class="pick-top"><span class="pick-id">2026-18</span><span class="pick-kind">App</span></span>
+          <span class="pick-name">QuestionPilot</span>
+          <span class="pick-problem">Claude Code asks a question and the picker grabs your terminal before you've had a chance to think.</span>
+          
+          <span class="pick-runs" role="img" aria-label="Runs on macOS 13+ Apple Silicon. Works with Claude."><svg aria-hidden="true"><title>macOS 13+ Apple Silicon</title><use href="#io-i-macos"/></svg><i></i><svg aria-hidden="true"><title>Claude</title><use href="#io-i-claude"/></svg></span>
+        </a>
+        <a class="pick" href="https://indieops.co/skills/promptawesome">
+          <span class="pick-top"><span class="pick-id">2026-19</span><span class="pick-kind">Skill</span></span>
+          <span class="pick-name">PromptAwesome</span>
+          <span class="pick-problem">Every AI tool wants its prompts shaped differently, and yours are scattered across notes apps.</span>
+          
+          <span class="pick-runs" role="img" aria-label="Runs on macOS 11+, Windows 10+, Linux (glibc 2.28+). Works with Claude."><svg aria-hidden="true"><title>macOS 11+</title><use href="#io-i-macos"/></svg><svg aria-hidden="true"><title>Windows 10+</title><use href="#io-i-windows"/></svg><svg aria-hidden="true"><title>Linux (glibc 2.28+)</title><use href="#io-i-linux"/></svg><i></i><svg aria-hidden="true"><title>Claude</title><use href="#io-i-claude"/></svg></span>
+        </a>
+        <a class="pick" href="https://indieops.co/skills/launchskeptic">
+          <span class="pick-top"><span class="pick-id">2026-20</span><span class="pick-kind">Skill</span></span>
+          <span class="pick-name">LaunchSkeptic</span>
+          <span class="pick-problem">You're about to spend months building an idea nobody has checked.</span>
+          
+          <span class="pick-runs" role="img" aria-label="Runs on macOS, Windows, Linux. Works with Claude."><svg aria-hidden="true"><title>macOS</title><use href="#io-i-macos"/></svg><svg aria-hidden="true"><title>Windows</title><use href="#io-i-windows"/></svg><svg aria-hidden="true"><title>Linux</title><use href="#io-i-linux"/></svg><i></i><svg aria-hidden="true"><title>Claude</title><use href="#io-i-claude"/></svg></span>
+        </a>
+        <a class="pick" href="https://indieops.co/skills/ruv-lite">
+          <span class="pick-top"><span class="pick-id">2026-22</span><span class="pick-kind">Skill</span></span>
+          <span class="pick-name">ruv lite</span>
+          <span class="pick-problem">Everyone's talking about Ruflo, RuVector and agent swarms, and you can't tell which of it your project actually needs.</span>
+          
+          <span class="pick-runs" role="img" aria-label="Runs on macOS, Windows, Linux. Works with Claude."><svg aria-hidden="true"><title>macOS</title><use href="#io-i-macos"/></svg><svg aria-hidden="true"><title>Windows</title><use href="#io-i-windows"/></svg><svg aria-hidden="true"><title>Linux</title><use href="#io-i-linux"/></svg><i></i><svg aria-hidden="true"><title>Claude</title><use href="#io-i-claude"/></svg></span>
+        </a></div>
+      </div>
+      <div class="pick-group">
+        <h3>What I made looks worse than it is</h3>
+        <div class="picks">
+        <a class="pick" href="https://indieops.co/skills/tastepilot">
+          <span class="pick-top"><span class="pick-id">2026-01</span><span class="pick-kind">Skill</span></span>
+          <span class="pick-name">TastePilot</span>
+          <span class="pick-problem">Your writing is good and it looks like a text file.</span>
+          
+          <span class="pick-runs" role="img" aria-label="Runs on macOS 12+, Windows 10+, Linux (glibc 2.28+). Works with Claude."><svg aria-hidden="true"><title>macOS 12+</title><use href="#io-i-macos"/></svg><svg aria-hidden="true"><title>Windows 10+</title><use href="#io-i-windows"/></svg><svg aria-hidden="true"><title>Linux (glibc 2.28+)</title><use href="#io-i-linux"/></svg><i></i><svg aria-hidden="true"><title>Claude</title><use href="#io-i-claude"/></svg></span>
+        </a>
+        <a class="pick" href="https://indieops.co/skills/press-ready">
+          <span class="pick-top"><span class="pick-id">2026-04</span><span class="pick-kind">Plugin</span></span>
+          <span class="pick-name">Press Ready</span>
+          <span class="pick-problem">You are about to publish files carrying invisible characters and metadata you did not mean to send.</span>
+          
+          <span class="pick-runs" role="img" aria-label="Runs on macOS, Windows, Linux. Works with Claude."><svg aria-hidden="true"><title>macOS</title><use href="#io-i-macos"/></svg><svg aria-hidden="true"><title>Windows</title><use href="#io-i-windows"/></svg><svg aria-hidden="true"><title>Linux</title><use href="#io-i-linux"/></svg><i></i><svg aria-hidden="true"><title>Claude</title><use href="#io-i-claude"/></svg></span>
+        </a>
+        <a class="pick" href="https://indieops.co/skills/claujabi">
+          <span class="pick-top"><span class="pick-id">2026-06</span><span class="pick-kind">Skill</span></span>
+          <span class="pick-name">Claujabi</span>
+          <span class="pick-problem">Course platforms want a monthly fee to host a thing you already made.</span>
+          
+          <span class="pick-runs" role="img" aria-label="Runs on macOS 10.15+, Windows 10+, Linux (glibc 2.28+). Works with Claude, Codex."><svg aria-hidden="true"><title>macOS 10.15+</title><use href="#io-i-macos"/></svg><svg aria-hidden="true"><title>Windows 10+</title><use href="#io-i-windows"/></svg><svg aria-hidden="true"><title>Linux (glibc 2.28+)</title><use href="#io-i-linux"/></svg><i></i><svg aria-hidden="true"><title>Claude</title><use href="#io-i-claude"/></svg><svg aria-hidden="true"><title>Codex</title><use href="#io-i-codex"/></svg></span>
+        </a>
+        <a class="pick" href="https://indieops.co/skills/flipbook-maker">
+          <span class="pick-top"><span class="pick-id">2026-07</span><span class="pick-kind">Skill</span></span>
+          <span class="pick-name">Flipbook Maker</span>
+          <span class="pick-problem">A long document nobody finishes reading.</span>
+          
+          <span class="pick-runs" role="img" aria-label="Runs on macOS, Windows, Linux. Works with Claude."><svg aria-hidden="true"><title>macOS</title><use href="#io-i-macos"/></svg><svg aria-hidden="true"><title>Windows</title><use href="#io-i-windows"/></svg><svg aria-hidden="true"><title>Linux</title><use href="#io-i-linux"/></svg><i></i><svg aria-hidden="true"><title>Claude</title><use href="#io-i-claude"/></svg></span>
+        </a>
+        <a class="pick" href="https://indieops.co/skills/storybook-cover">
+          <span class="pick-top"><span class="pick-id">2026-10</span><span class="pick-kind">Skill</span></span>
+          <span class="pick-name">StoryBook Cover</span>
+          <span class="pick-problem">The story is written and the cover looks like clip art.</span>
+          
+          <span class="pick-runs" role="img" aria-label="Runs on macOS, Windows, Linux. Works with Claude."><svg aria-hidden="true"><title>macOS</title><use href="#io-i-macos"/></svg><svg aria-hidden="true"><title>Windows</title><use href="#io-i-windows"/></svg><svg aria-hidden="true"><title>Linux</title><use href="#io-i-linux"/></svg><i></i><svg aria-hidden="true"><title>Claude</title><use href="#io-i-claude"/></svg></span>
+        </a>
+        <a class="pick" href="https://indieops.co/skills/pilot-pilot">
+          <span class="pick-top"><span class="pick-id">2026-17</span><span class="pick-kind">Plugin</span></span>
+          <span class="pick-name">Pilot-Pilot</span>
+          <span class="pick-problem">Your script reads like everybody else's AI script.</span>
+          
+          <span class="pick-runs" role="img" aria-label="Runs on macOS, Windows, Linux. Works with Claude."><svg aria-hidden="true"><title>macOS</title><use href="#io-i-macos"/></svg><svg aria-hidden="true"><title>Windows</title><use href="#io-i-windows"/></svg><svg aria-hidden="true"><title>Linux</title><use href="#io-i-linux"/></svg><i></i><svg aria-hidden="true"><title>Claude</title><use href="#io-i-claude"/></svg></span>
+        </a></div>
+      </div>
+    <div class="pick-group" id="io-new" hidden>
+      <h3>Released since this guide was written</h3>
+      <div class="picks" id="io-new-picks"></div>
+    </div>
+    <p class="chooser-foot"><a class="pill" href="https://indieops.co/skills-and-plugins">See every Skilllet and plugin at indieops.co</a></p>
+  </section>
+
+  <script>
+  /* This guide is a file on someone's disk. The cards above were correct the day
+     it was built and will still be correct in five years — they are plain HTML
+     and need nothing.
+
+     But the catalogue grows. So: if there is a connection, quietly ask the
+     registry for anything released since and append it. If there is no
+     connection, no server, or no CORS header, nothing happens and the reader
+     sees the cards that were always there. No error, no spinner, no gap.
+
+     An iframe here would have been the obvious fix and the wrong one: offline,
+     on a locked-down network, or the year the site moves, an iframe is a blank
+     rectangle in the middle of the page. This fails invisibly instead. */
+  (function () {
+    var KNOWN = ["2026-01","2026-02","2026-03","2026-04","2026-05","2026-06","2026-07","2026-08","2026-09","2026-10","2026-12","2026-13","2026-14","2026-16","2026-17","2026-18","2026-19","2026-20","2026-22","2026-15"];
+    var URLS = ["https://indieops.co/catalogue.json","https://raw.githubusercontent.com/indieops-co/skilllet-registry/main/catalogue.json"];
+    var BASE = "https://indieops.co/skills";
+    var KINDS = {"skill":"Skill","plugin":"Plugin","app":"App"};
+    var OS = {"macos":"macOS","windows":"Windows","linux":"Linux"}, AI = {"claude":"Claude","codex":"Codex","gemini":"Gemini"}, VER = /^[\w .+-]{0,24}$/;
+    var ID = /^\d{4}-\d{2,3}$/, SLUG = /^[a-z0-9][a-z0-9-]{0,60}$/, HTTPS = /^https:\/\/[^\s"'<>]+$/;
+    function str(v, max) { return typeof v === 'string' && v.length > 0 && v.length <= max; }
+    function el(tag, cls, text) { var n = document.createElement(tag); n.className = cls; if (text) n.textContent = text; return n; }
+    function named(label, v) { return !v ? label : /^\d/.test(v) ? label + ' ' + v : label + ' (' + v + ')'; }
+    function mark(k, name) {
+      var NS = 'http://www.w3.org/2000/svg', svg = document.createElementNS(NS, 'svg');
+      var t = document.createElementNS(NS, 'title'), u = document.createElementNS(NS, 'use');
+      svg.setAttribute('aria-hidden', 'true'); t.textContent = name; u.setAttribute('href', '#io-i-' + k);
+      svg.appendChild(t); svg.appendChild(u); return svg;
+    }
+    function runs(s) {  /* the same row the baked cards get */
+      var p = s.platforms && typeof s.platforms === 'object' ? s.platforms : {}, os = [], ai = [];
+      Object.keys(OS).forEach(function (k) { if (typeof p[k] === 'string' && VER.test(p[k])) os.push([k, named(OS[k], p[k])]); });
+      (Array.isArray(s.worksWith) ? s.worksWith : []).forEach(function (k) { if (typeof k === 'string' && AI.hasOwnProperty(k)) ai.push([k, AI[k]]); });
+      if (!os.length && !ai.length) return null;
+      var names = function (l) { return l.map(function (x) { return x[1]; }).join(', '); };
+      var row = el('span', 'pick-runs');
+      row.setAttribute('role', 'img');
+      row.setAttribute('aria-label', [os.length ? 'Runs on ' + names(os) + '.' : '', ai.length ? 'Works with ' + names(ai) + '.' : ''].join(' ').trim());
+      os.forEach(function (x) { row.appendChild(mark(x[0], x[1])); });
+      if (os.length && ai.length) row.appendChild(document.createElement('i'));
+      ai.forEach(function (x) { row.appendChild(mark(x[0], x[1])); });
+      return row;
+    }
+    function render(data) {
+      var box = document.getElementById('io-new-picks');
+      if (!box) return;
+      var fresh = data.skilllets.filter(function (s) {
+        return s && ID.test(s.id) && SLUG.test(s.slug) && str(s.name, 60) && str(s.problem, 280) &&
+               s.status !== 'planned' && KNOWN.indexOf(s.id) === -1;
+      });
+      if (!fresh.length) return;
+      fresh.slice(0, 6).forEach(function (s) {
+        var a = el('a', 'pick');
+        a.href = HTTPS.test(s.url || '') ? s.url : BASE + '/' + s.slug;
+        var top = el('span', 'pick-top');
+        top.appendChild(el('span', 'pick-id', s.id));
+        if (KINDS[s.kind]) top.appendChild(el('span', 'pick-kind', KINDS[s.kind]));
+        a.appendChild(top);
+        a.appendChild(el('span', 'pick-name', s.name));
+        a.appendChild(el('span', 'pick-problem', s.problem));
+        var row = runs(s);
+        if (row) a.appendChild(row);
+        box.appendChild(a);
+      });
+      document.getElementById('io-new').hidden = false;
+    }
+    function attempt(i) {
+      if (i >= URLS.length || typeof fetch !== 'function') return;
+      var ctl = typeof AbortController === 'function' ? new AbortController() : null;
+      var timer = ctl ? setTimeout(function () { ctl.abort(); }, 6000) : null;
+      var done = function () { if (timer) clearTimeout(timer); };
+      fetch(URLS[i], { mode: 'cors', credentials: 'omit', signal: ctl ? ctl.signal : undefined })
+        .then(function (r) { if (!r.ok) throw new Error('status'); return r.json(); })
+        .then(function (data) {
+          done();
+          if (!data || !Array.isArray(data.skilllets)) return attempt(i + 1);
+          try { render(data); } catch (e) { /* a bad entry never breaks the page */ }
+        }, function () { done(); attempt(i + 1); /* offline, blocked, not hosted yet: try the next one */ });
+    }
+    try { attempt(0); } catch (e) { /* correct as-is */ }
+  })();
+  </script>
+  <!-- /io:chooser -->
+
+  <footer>
+    <p>An IndieOps Skilllet — a copyable skill folder that does one job properly.</p>
+    <p><a href="https://indieops.co">indieops.co</a> · Skilllet 2026-15 · guide revised 2026</p>
+  </footer>
+
+</div>
+
+<script>
+  // One button: shows the current mode, each press steps Light → Dark → Auto. Auto follows the operating system.
+  (function () {
+    var KEY = 'indieops-theme';
+    var ORDER = ['light', 'dark', 'auto'], LABEL = { light: 'Light', dark: 'Dark', auto: 'Auto' };
+    var btn = document.querySelector('.theme');
+    function next(m) { return ORDER[(ORDER.indexOf(m) + 1) % ORDER.length]; }
+    function apply(mode) {
+      if (mode !== 'light' && mode !== 'dark') mode = 'auto';
+      if (mode === 'auto') document.documentElement.removeAttribute('data-theme');
+      else document.documentElement.setAttribute('data-theme', mode);
+      btn.setAttribute('data-mode', mode);
+      btn.setAttribute('aria-label', 'Theme: ' + LABEL[mode] + '. Switch to ' + LABEL[next(mode)]);
+      btn.setAttribute('title', 'Theme: ' + LABEL[mode]);
+      return mode;
+    }
+    var saved = 'auto';
+    try { saved = localStorage.getItem(KEY) || 'auto'; } catch (e) {}
+    apply(saved);
+    btn.addEventListener('click', function () {
+      var m = apply(next(btn.getAttribute('data-mode')));
+      try { localStorage.setItem(KEY, m); } catch (e) {}
+    });
+  })();
+</script>
+</body>
+</html>
