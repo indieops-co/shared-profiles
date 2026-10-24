@@ -1,0 +1,19 @@
+{
+  "name": "shared-profiles-demo-gif",
+  "private": true,
+  "type": "module",
+  "description": "Remotion source for Shared Profiles' demo GIF (docs/demo.gif, docs/demo-dark.gif). Never ships.",
+  "scripts": { "studio": "remotion studio", "capture": "bash capture/capture.sh", "render": "bash render.sh" },
+  "dependencies": {
+    "@remotion/cli": "4.0.438",
+    "@remotion/google-fonts": "4.0.438",
+    "react": "19.2.7",
+    "react-dom": "19.2.7",
+    "remotion": "4.0.438"
+  },
+  "devDependencies": {
+    "@types/react": "19.2.17",
+    "puppeteer-core": "23.11.1",
+    "typescript": "5.9.3"
+  }
+}

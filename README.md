@@ -8,6 +8,11 @@
 **Works with** Claude  
 **Needs** Node.js 18+ for the helper script and brand themes (optional) · an internet connection to import a theme
 
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/demo-dark.gif">
+  <img src="docs/demo.gif" width="960" alt="Animated demo: asked to give Acme Plumbing &amp; Heating a brand theme, Claude imports the Stripe design language, sets the client's green (#0a7c66) and Fraunces for headings, and opens the live preview, where Side by side shows the brand on social posts, a landing page and a monthly report in light and dark.">
+</picture>
+
 LinkPanther learns the domain. GBPCoach learns the business. Instantly Ready learns the sending
 setup. Right now each one asks you from scratch. Install this and they stop.
 
