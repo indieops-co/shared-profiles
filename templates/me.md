@@ -23,6 +23,7 @@ The section that stops every Skilllet sounding like a different person.
 ## Brand defaults
 For anything that renders — courses, publications, reports, graphics.
 
+- **Theme:** *(none yet — say "give me a brand theme": `brand/theme.json`, with a live preview)*
 - **Fonts:**
 - **Colours:**
 - **Look, in a phrase:**

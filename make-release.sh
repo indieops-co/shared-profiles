@@ -2,7 +2,7 @@
 # make-release.sh — builds the buyer-facing zip for this Skilllet.
 #
 #   ./make-release.sh
-#   → release/IndieOps-Skilllet-2026-13-GBPCoach-v1.0.zip   (unzips to  gbpcoach/)
+#   → release/IndieOps-Skilllet-2026-15-SharedProfiles-v1.1.zip   (unzips to  shared-profiles/)
 #
 # Branded outside, clean inside. Only files git tracks can ship, so an untracked
 # .env, a scratch file or a stray zip can't sneak in. Then it REFUSES outright if
@@ -43,12 +43,13 @@ STAGE="release/.stage/$SLUG"
 rm -rf release/.stage "release/$ZIPNAME"
 mkdir -p "$STAGE"
 
-# Never ships: sales copy, the guide's Markdown source, repo housekeeping, internal plans.
-git ls-files | grep -v -E '^(marketing/|guide\.md$|REPO\.md$|PUSH\.md$|RELEASING\.md$|make-release\.sh$|\.gitignore$|\.github/|release/|PLAN[^/]*\.md$)' > release/.stage/files.txt
+# Never ships: sales copy, the guide's Markdown source, repo housekeeping, internal plans, and the
+# tests (their fixtures are third-party DESIGN.md files kept only as test data).
+git ls-files | grep -v -E '^(marketing/|test/|guide\.md$|REPO\.md$|PUSH\.md$|RELEASING\.md$|make-release\.sh$|\.gitignore$|\.github/|release/|PLAN[^/]*\.md$)' > release/.stage/files.txt
 rsync -a --files-from=release/.stage/files.txt ./ "$STAGE"/
 
 # Belt and braces: check the staging folder itself, however things got there.
-bad=$(cd "$STAGE" && find . \( -path ./marketing -o -name guide.md -o -path ./.env -o -path ./.env.local -o -name node_modules -o -name .git \) -print)
+bad=$(cd "$STAGE" && find . \( -path ./marketing -o -path ./test -o -name guide.md -o -path ./.env -o -path ./.env.local -o -name node_modules -o -name .git \) -print)
 if [ -n "$bad" ]; then
   echo "REFUSING: these must never reach a buyer:"; echo "$bad"; rm -rf release/.stage; exit 1
 fi

@@ -1,0 +1,5 @@
+{
+  "fps": 15,
+  "scenes": { "title": 22, "complaint": 32, "pick": 64, "tune": 56, "preview": 100 },
+  "previewShots": { "top": 0, "social": 24, "landing": 54, "report": 77 }
+}
